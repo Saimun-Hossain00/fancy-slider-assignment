@@ -13,21 +13,27 @@ let sliders = [];
 // to create your own api key
 const KEY = '15674931-a9d714b6e9d654524df198e00&q';
 
+
 // show images 
 const showImages = (images) => {
-  imagesArea.style.display = 'block';
-  gallery.innerHTML = '';
-  // show gallery title
-  galleryHeader.style.display = 'flex';
-  images.forEach(image => {
-    let div = document.createElement('div');
-    div.className = 'col-lg-3 col-md-4 col-xs-6 img-item mb-2';
-    div.innerHTML = ` <img class="img-fluid img-thumbnail" onclick=selectItem(event,"${image.webformatURL}") src="${image.webformatURL}" alt="${image.tags}">`;
-    gallery.appendChild(div)
-    toggleSpinner(false);
-  })
 
+  if (images.length == 0) {
+    document.getElementById("not-found").innerText = "Sorry, No Results Found!";
+  } else {
+    imagesArea.style.display = 'block';
+    gallery.innerHTML = '';
+    galleryHeader.style.display = 'flex';
+    images.forEach(image => {
+      let div = document.createElement('div');
+      div.className = 'col-lg-3 col-md-4 col-xs-6 img-item mb-2';
+      div.innerHTML = ` <img class="img-fluid img-thumbnail" onclick=selectItem(event,"${image.webformatURL}") src="${image.webformatURL}" alt="${image.tags}">`;
+      gallery.appendChild(div);
+      document.getElementById("not-found").innerText = "";
+    })
 }
+    toggleSpinner(false);
+}
+
 const getImages = (query) => {
   toggleSpinner(true);
   fetch(`https://pixabay.com/api/?key=${KEY}=${query}&image_type=photo&pretty=true`)
@@ -68,15 +74,17 @@ const createSlider = () => {
   document.querySelector('.main').style.display = 'block';
   // hide image aria
   imagesArea.style.display = 'none';
-  const duration = document.getElementById('duration').value || 3000;
-  sliders.forEach(slide => {
-    let item = document.createElement('div')
-    item.className = "slider-item";
-    item.innerHTML = `<img class="w-100"
-    src="${slide}"
-    alt="">`;
-    sliderContainer.appendChild(item);
-  })
+  const duration = document.getElementById('duration').value || 1000;
+  if (duration < 0) {
+    alert('Please enter positive time')
+} else {
+    sliders.forEach(slide => {
+        let item = document.createElement('div')
+        item.className = "slider-item";
+        item.innerHTML = `<img class="w-100" src="${slide}" alt="">`;
+        sliderContainer.appendChild(item)
+    })
+}
   changeSlide(0)
   timer = setInterval(function () {
     slideIndex++;
